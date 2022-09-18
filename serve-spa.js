@@ -1,26 +1,37 @@
 #!/usr/bin/env node
 
-const argv = require("minimist")(process.argv.slice(2));
 const express = require("express");
 const http = require("http");
+const parseArgs = require("minimist");
 const path = require("path");
 const proxyServer = require("http-proxy").createProxyServer({});
 
-if ("h" in argv) {
+const argv = parseArgs(process.argv.slice(2), {
+    string: "a",
+    boolean: ["h", "v", "x"],
+    default: {
+	"a": "/api/",
+	"b": 3001,
+	"p": 3000
+    }
+});
+
+if (argv.h) {
     console.log(`\
 Usage: serve-spa [OPTION]... [DOCROOT]
 Serve static files in DOCROOT (the current directory by default).
 
-  -a PATH\tProxy requests to PATH* to the backend server ("/api/" by default)
+  -a PATH\tSet the backend API URL prefix to PATH ("/api/" by default).
+  -b PORT\tSet the backend server PORT (3001 by default).
   -p PORT\tListen for requests on PORT (3000 by default).
-  -x PORT\tSet the backend server PORT (3001 by default).
 
-  -h Show this help and exit.
-  -v Show version and copyright information.`);
+  -x \tEnable reverse-proxy for backend requests.
+  -h \tShow this help and exit.
+  -v \tShow version and copyright information.`);
     return;
 }
 
-if ("v" in argv) {
+if (argv.v) {
     console.log(`\
 serve-spa v0.1.0
 Copyright (c) 2022 Hassan El anabi (al-annabi.tech)
@@ -30,21 +41,20 @@ There is NO WARRANTY, to the extent permitted by law.`);
     return;
 }	
 
-function getArg(opt, defaultValue, typeChecker=() => true) {
-    const arg = argv[opt];
-    if (!arg || arg === true) {
-	return defaultValue;
-    } else if (!typeChecker(arg)) {
-	console.error(`Invalid value '${arg}' for option -${opt}. see -h for help`);
-	process.exit(1);
+function checkPort(n) {
+    if (Number.isInteger(n)
+	&& n > 0
+	&& n < 2**16) {
+	return n;
     } else {
-	return arg;
+	console.error(`Invalid port number: ${n}`);
+	process.exit(1);
     }
 }
 
-const PORT = getArg("p", 3000, Number.isInteger);
-const PROXY_PORT = getArg("x", 3001, Number.isInteger);
-const API_PATH = getArg("a", "/api/");
+const PORT = checkPort(argv.p);
+const PROXY_PORT = checkPort(argv.b);
+const API_PATH = argv.a;
 const STATIC_DIR = argv._[0] || process.env.PWD;
 
 function proxy(req, res, next) {
@@ -57,7 +67,7 @@ function proxy(req, res, next) {
 
 const app = express();
 
-if ("x" in argv) {
+if (argv.x) {
     app.use(proxy);
 }
 
@@ -68,9 +78,9 @@ app.get("/*", (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`Server listening on port ${PORT}...`);
-    if ("x" in argv) {
-	console.log(`Proxy enabled for requests to ${API_PATH}*`);
+    if (argv.x) {
+	console.log(`Reverse-proxy enabled for requests to ${API_PATH}*`);
 	console.log(`Backend server port is set to ${PROXY_PORT}`);
     }
+    console.log(`Server listening on port ${PORT}...`);
 });

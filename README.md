@@ -10,13 +10,16 @@ These features make it ideal for serving Single Page Applications (SPAs).
 ## Examples
 
 * Using the defaults -- serve current directory on port 3000, set backend to port 3001
+
 `$ serve-spa -x`
 
 * Serve `./website` on port 9000, reverse-proxy not enabled
+
 `$ serve-spa -p 9000 ./website`
 
-* Serve `./frontend` on port 9000, forwarding requests to /api/v2/* to a backend on port 3000
-`$ serve-spa -p 9000 ./frontend -x -b 3000 -a "/api/v2/"
+* Serve `./frontend` on port 9000, forwarding requests to `/api/v2/*` to a backend on port 3000
+
+`$ serve-spa -p 9000 ./frontend -x -b 3000 -a "/api/v2/"`
 
 ## Manual
 
@@ -36,6 +39,9 @@ Serve static files in DOCROOT (the current directory by default).
 ## Copyright
 
 serve-spa Copyright (c) 2022 Hassan El anabi (al-annabi.tech)
+
 License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.
+
 This is free software: you are free to change and redistribute it.
+
 There is NO WARRANTY, to the extent permitted by law.

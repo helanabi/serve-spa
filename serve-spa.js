@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 
+/*
+  Copyright (C) 2022 Hassan El anabi (al-annabi.tech)
+  License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.
+*/
+
 const express = require("express");
 const http = require("http");
 const parseArgs = require("minimist");

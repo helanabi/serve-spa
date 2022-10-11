@@ -38,7 +38,7 @@ Serve static files in DOCROOT (the current directory by default).
 
 ## Copyright
 
-serve-spa Copyright (c) 2022 Hassan El anabi (al-annabi.tech)
+serve-spa Copyright (C) 2022 Hassan El anabi (al-annabi.tech)
 
 License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.
 
